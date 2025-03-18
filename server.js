@@ -17,10 +17,16 @@ const HTTPS_PORT = 443;
 // };
 
 // ✅ Load SSL Certificates from .env
+// const sslOptions = {
+//     key: fs.readFileSync(path.join(__dirname, process.env.SSL_KEY_PATH)),
+//     cert: fs.readFileSync(path.join(__dirname, process.env.SSL_CERT_PATH)),
+//     ca: fs.readFileSync(path.join(__dirname, process.env.SSL_CA_PATH)),
+// };
+
 const sslOptions = {
-    key: fs.readFileSync(path.join(__dirname, process.env.SSL_KEY_PATH)),
-    cert: fs.readFileSync(path.join(__dirname, process.env.SSL_CERT_PATH)),
-    ca: fs.readFileSync(path.join(__dirname, process.env.SSL_CA_PATH)),
+    key: fs.readFileSync(process.env.SSL_KEY_PATH),
+    cert: fs.readFileSync(process.env.SSL_CERT_PATH),
+    ca: fs.readFileSync(process.env.SSL_CA_PATH),
 };
 
 // ✅ Middleware to parse JSON
