@@ -5,3 +5,5 @@ ssl/
 *.crt
 *.key
 *.pem
+# ignore apks
+apks/

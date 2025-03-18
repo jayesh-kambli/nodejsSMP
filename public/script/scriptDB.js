@@ -17,51 +17,51 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             headers: { "Content-Type": "application/json" }
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Server error: " + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                sessionStorage.removeItem("loggedIn"); // Clear session storage
-                window.location.href = "./index.html"; // Redirect to login page
-                console.log("Run: Logout successful!");
-            } else {
-                console.error("Logout failed:", data.message);
-                alert("Logout failed: " + data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Logout Error:", error);
-            alert("Logout failed. Server not reachable.");
-        });
-        
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Server error: " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    sessionStorage.removeItem("loggedIn"); // Clear session storage
+                    window.location.href = "./index.html"; // Redirect to login page
+                    console.log("Run: Logout successful!");
+                } else {
+                    console.error("Logout failed:", data.message);
+                    alert("Logout failed: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Logout Error:", error);
+                alert("Logout failed. Server not reachable.");
+            });
+
+    });
+
+    document.getElementById("download").addEventListener("click", () => {
+        window.location.href = "./apks/minecraft-1-21-62.apk";
     });
 
 
 });
 
-function downloadApk() {
-    window.location.href = "./apks/minecraft-1-21-62.apk";
-}
-
-function copyIP() {
+document.getElementById("copyIP").addEventListener("click", () => {
     var ipField = document.getElementById("serverIPJava");
     ipField.select();
     ipField.setSelectionRange(0, 99999); // For mobile support
     navigator.clipboard.writeText(ipField.value);
     // alert("Copied: " + ipField.value);
-}
+});
 
-function copyIP2() {
+document.getElementById("copyIP2").addEventListener("click", () => {
     var ipField = document.getElementById("serverIPBedrock");
     ipField.select();
     ipField.setSelectionRange(0, 99999); // For mobile support
     navigator.clipboard.writeText(ipField.value);
     // alert("Copied: " + ipField.value);
-}
+});
 
 
 function updateDashboard(clientIp) {
@@ -77,7 +77,7 @@ function updateDashboard(clientIp) {
                 window.location.href = "index.html"; // Redirect if not logged in
                 return;
             }
-    
+
             // ✅ Store received data
             const uuid = data.uuid; // Replace with actual UUID
 

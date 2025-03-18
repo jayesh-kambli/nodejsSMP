@@ -5,8 +5,10 @@ const mysql = require("mysql2");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const crypto = require("crypto");
+const expressSanitizer = require("express-sanitizer");
 
 const router = express.Router();
+router.use(expressSanitizer());
 
 require("dotenv").config();
 // ✅ MySQL Connection
@@ -40,7 +42,8 @@ router.use(
 
 // ✅ User Login API
 router.post("/login", (req, res) => {
-    const { name, password } = req.body;
+    const name = req.sanitize(req.body.name);
+    const password = req.sanitize(req.body.password);
 
     if (!name || !password) {
         return res.status(400).json({ error: "Missing name or password." });

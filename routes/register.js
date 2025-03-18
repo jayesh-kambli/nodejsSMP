@@ -1,7 +1,9 @@
 const express = require("express");
 const mysql = require("mysql2");
 const crypto = require("crypto");
+const expressSanitizer = require("express-sanitizer");
 const router = express.Router();
+router.use(expressSanitizer());
 
 require("dotenv").config();
 // ✅ MySQL Connection
@@ -17,7 +19,11 @@ const db = mysql.createConnection({
 
 // ✅ User Registration API
 router.post("/register", async (req, res) => {
-    const { name, password, ip } = req.body;
+    // const { name, password, ip } = req.body;
+
+    const name = req.sanitize(req.body.name);
+    const password = req.sanitize(req.body.password);
+    const ip = req.sanitize(req.body.ip);
 
     if (!name || !password) {
         return res.status(400).json({ success: false, message: "Missing name or password." });
