@@ -46,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 });
-
 document.getElementById("copyIP").addEventListener("click", () => {
     var ipField = document.getElementById("serverIPJava");
     ipField.select();

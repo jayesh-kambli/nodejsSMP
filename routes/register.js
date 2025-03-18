@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql2");
 const crypto = require("crypto");
 const expressSanitizer = require("express-sanitizer");
+const validator = require("validator");
 const router = express.Router();
 router.use(expressSanitizer());
 
@@ -21,7 +22,7 @@ const db = mysql.createConnection({
 router.post("/register", async (req, res) => {
     // const { name, password, ip } = req.body;
 
-    const name = req.sanitize(req.body.name);
+    const name = validator.trim(req.sanitize(req.body.name));
     const password = req.sanitize(req.body.password);
     const ip = req.sanitize(req.body.ip);
 
@@ -31,6 +32,11 @@ router.post("/register", async (req, res) => {
 
     if (password.length < 8) {
         return res.status(400).json({ success: false, message: "Password must be at least 8 characters long." });
+    }
+
+    // ✅ Validate username (Only letters, numbers, and underscores, min 3 chars)
+    if (!validator.isAlphanumeric(name, "en-US", { ignore: "_" }) || name.length < 3) {
+        return res.status(400).json({ error: "Invalid username. Use only letters, numbers, and underscores." });
     }
 
     // ✅ Hash the password using SHA-256

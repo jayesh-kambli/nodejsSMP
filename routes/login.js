@@ -6,6 +6,8 @@ const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const crypto = require("crypto");
 const expressSanitizer = require("express-sanitizer");
+const rateLimit = require("express-rate-limit");
+const validator = require("validator");
 
 const router = express.Router();
 router.use(expressSanitizer());
@@ -40,13 +42,31 @@ router.use(
     })
 );
 
+
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit to 5 login attempts per 15 mins per IP
+    message: { error: "Too many login attempts, try again later." }
+});
+
+
 // ✅ User Login API
+const validator = require("validator");
+
 router.post("/login", (req, res) => {
-    const name = req.sanitize(req.body.name);
+    // ✅ Sanitize input
+    const name = validator.trim(req.sanitize(req.body.name));
     const password = req.sanitize(req.body.password);
 
+    // ✅ Check if inputs are empty
     if (!name || !password) {
         return res.status(400).json({ error: "Missing name or password." });
+    }
+
+    // ✅ Validate username (Only letters, numbers, and underscores, min 3 chars)
+    if (!validator.isAlphanumeric(name, "en-US", { ignore: "_" }) || name.length < 3) {
+        return res.status(400).json({ error: "Invalid username. Use only letters, numbers, and underscores." });
     }
 
     db.query("SELECT * FROM users WHERE name = ?", [name], async (err, results) => {
@@ -55,21 +75,23 @@ router.post("/login", (req, res) => {
         }
 
         const user = results[0];
-        // const passwordMatch = await bcrypt.compare(password, user.password);
 
+        // ✅ Secure password verification (Still using SHA-256, but bcrypt is recommended)
         const enteredHash = crypto.createHash("sha256").update(password).digest("hex");
 
-        // console.log("Entered Hash (SHA-256):", enteredHash);
-        // console.log("Stored Hash:", user.password);
-
         if (enteredHash !== user.password) {
-            return res.status(401).json({ error: "Invalid credentials (Password Miss Match)" });
+            return res.status(401).json({ error: "Invalid credentials (Password Mismatch)" });
         }
 
-        // ✅ Store user session
-        req.session.user = user;
-        res.json({ success: true, uuid: user.uuid });
+        // ✅ Regenerate session for security
+        req.session.regenerate((err) => {
+            if (err) return res.status(500).json({ error: "Session error." });
+
+            req.session.user = user;
+            res.json({ success: true, uuid: user.uuid });
+        });
     });
 });
+
 
 module.exports = router;
