@@ -24,9 +24,9 @@ const HTTPS_PORT = 443;
 // };
 
 const sslOptions = {
-    key: fs.readFileSync(process.env.SSL_KEY_PATH),
-    cert: fs.readFileSync(process.env.SSL_CERT_PATH),
-    ca: fs.readFileSync(process.env.SSL_CA_PATH),
+    key: fs.readFileSync(path.normalize(process.env.SSL_KEY_PATH)),
+    cert: fs.readFileSync(path.normalize(process.env.SSL_CERT_PATH)),
+    ca: fs.readFileSync(path.normalize(process.env.SSL_CA_PATH)),
 };
 
 // ✅ Middleware to parse JSON
