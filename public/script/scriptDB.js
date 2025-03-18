@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+
     fetch('https://api.ipify.org?format=json') // Fetch public IP from ipify API
         .then(response => response.json())
         .then(data => {

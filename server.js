@@ -4,14 +4,39 @@ const path = require("path");
 const fs = require("fs");
 const https = require("https");
 const http = require("http");
+const helmet = require("helmet");
 
 const app = express();
 
 // Hide "X-Powered-By" to prevent attackers from identifying the framework
 app.disable("x-powered-by");
 
-const rateLimit = require("express-rate-limit");
+// ✅ Use Helmet with default settings
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: [
+                    "'self'", 
+                    "https://cdn.jsdelivr.net", 
+                    "'unsafe-inline'", 
+                    "blob:",
+                    "https://unpkg.com", // Allow Ionicons
+                ],
+                connectSrc: [
+                    "'self'",
+                    "https://www.google-analytics.com", 
+                    "https://api.ipify.org" // Allow IP fetch
+                ]
+            }
+        }
+    })
+);
 
+
+
+const rateLimit = require("express-rate-limit");
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per 15 mins
