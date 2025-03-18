@@ -53,59 +53,95 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let nameInput = document.getElementById("name");
-    
+
             // Load saved name from localStorage
             if (localStorage.getItem("savedName")) {
                 nameInput.value = localStorage.getItem("savedName");
             }
         });
-    
+
         document.getElementById('loginForm').addEventListener('submit', function (event) {
             event.preventDefault();
-    
-            // Fetch user's IP address
-            fetch('https://api.ipify.org?format=json')
-                .then(response => response.json())
+
+            // Fetch CSRF token first
+            fetch('/csrf-token', { credentials: 'include' }) // ✅ Ensure cookies are sent
+                .then(res => res.json())
                 .then(data => {
-                    const ip = data.ip;
-    
-                    // Prepare form data
-                    const userData = {
-                        name: document.getElementById("name").value,
-                        password: document.getElementById("password").value,
-                        ip: ip
-                    };
-    
-                    // Send data to Node.js login API
-                    fetch('/login', { // Updated URL for Node.js
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(userData)
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        localStorage.setItem("savedName", document.getElementById("name").value);
-                        
-                        if (result.success) {
-                            window.location.href = "dashboard.html";
-                        }
-                        
-                        Toastify({
-                            text: result.message,
-                            className: "info",
-                            style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
-                        }).showToast();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                    const csrfToken = data.csrfToken; // ✅ Store CSRF token
+
+                    // Fetch user's IP address
+                    fetch('https://api.ipify.org?format=json')
+                        .then(response => response.json())
+                        .then(data => {
+                            const ip = data.ip;
+
+                            // Prepare form data
+                            const userData = {
+                                name: document.getElementById("name").value.trim(),
+                                password: document.getElementById("password").value.trim(),
+                                ip: ip
+                            };
+
+                            // Send data to Node.js login API
+                            fetch('/login', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-Token': csrfToken // ✅ Include CSRF token
+                                },
+                                credentials: 'include', // ✅ Ensure cookies are sent
+                                body: JSON.stringify(userData)
+                            })
+                                .then(async response => {
+                                    try {
+                                        const result = await response.json();
+                                        localStorage.setItem("savedName", userData.name);
+
+                                        if (result.success) {
+                                            window.location.href = "dashboard.html";
+                                        } else {
+                                            throw new Error(result.error || "Login failed");
+                                        }
+                                    } catch (err) {
+                                        console.error("Server response error:", err);
+                                        Toastify({
+                                            text: "Invalid server response.",
+                                            className: "error",
+                                            style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
+                                        }).showToast();
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Toastify({
+                                        text: "Server error. Please try again.",
+                                        className: "error",
+                                        style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
+                                    }).showToast();
+                                });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching IP:', error);
+                            Toastify({
+                                text: "Could not fetch IP. Try again.",
+                                className: "error",
+                                style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
+                            }).showToast();
+                        });
                 })
                 .catch(error => {
-                    console.error('Error fetching IP:', error);
+                    console.error("Error fetching CSRF token:", error);
+                    Toastify({
+                        text: "Failed to get CSRF token.",
+                        className: "error",
+                        style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
+                    }).showToast();
                 });
         });
+
+
     </script>
-    
+
 </body>
 
 

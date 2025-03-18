@@ -52,9 +52,10 @@ const loginLimiter = rateLimit({
 
 
 // ✅ User Login API
-const validator = require("validator");
+const csurf = require("csurf");
+const csrfProtection = csurf({ cookie: true });
 
-router.post("/login", (req, res) => {
+router.post("/login", csrfProtection, (req, res) => {
     // ✅ Sanitize input
     const name = validator.trim(req.sanitize(req.body.name));
     const password = req.sanitize(req.body.password);

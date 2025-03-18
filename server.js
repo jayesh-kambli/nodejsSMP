@@ -69,12 +69,13 @@ app.use((req, res, next) => {
     next();
 });
 
-// ✅ CSRF Protection (AFTER parsing cookies & JSON)
+// ✅ CSRF Middleware (Before Routes)
 const csrfProtection = csurf({ cookie: true });
 app.use(csrfProtection);
 
 // ✅ API to Get CSRF Token (Frontend should request this)
 app.get("/csrf-token", (req, res) => {
+    res.cookie("XSRF-TOKEN", req.csrfToken(), { httpOnly: false, secure: true, sameSite: "strict" });
     res.json({ csrfToken: req.csrfToken() });
 });
 
@@ -90,6 +91,8 @@ app.get("/", (req, res) => {
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const mysql = require("mysql2");
+
+const isProduction = process.env.NODE_ENV === "production";
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -109,11 +112,11 @@ app.use(
         saveUninitialized: false,
         store: sessionStore,
         cookie: {
-            httpOnly: true, // Prevents JavaScript access
-            secure: true, // Forces HTTPS-only cookies
-            sameSite: "strict", // Prevents CSRF from other sites
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
-            domain: process.env.DOMAIN || "yourdomain.com" // Prevents cookie theft
+            httpOnly: true,
+            secure: isProduction, // ✅ Secure only in production
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000,
+            domain: isProduction ? process.env.DOMAIN : undefined // ✅ No domain restriction for local testing
         },
     })
 );
@@ -127,7 +130,7 @@ const loginRoute = require("./routes/login");
 const dashboardRoute = require("./routes/dashboard");
 const logoutRoute = require("./routes/logout");
 
-// ✅ Apply CSRF Protection to API Routes
+// ✅ Apply Routes (CSRF already applied globally)
 app.use(registerRoute);
 app.use(loginRoute);
 app.use(dashboardRoute);

@@ -19,7 +19,10 @@ const db = mysql.createConnection({
 });
 
 // ✅ User Registration API
-router.post("/register", async (req, res) => {
+const csurf = require("csurf");
+const csrfProtection = csurf({ cookie: true });
+
+router.post("/register", csrfProtection, (req, res) => {
     // const { name, password, ip } = req.body;
 
     const name = validator.trim(req.sanitize(req.body.name));
