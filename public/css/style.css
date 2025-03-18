@@ -1,0 +1,109 @@
+body {
+    /* background-color: aqua; */
+    background-image: url("../img/mine1.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Makes the image stay fixed while scrolling */
+    height: 100vh;
+    width: 100%;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem !important;
+}
+
+button{
+    font-size: 1.5rem !important;
+}
+
+input{
+    font-family: sans-serif;
+}
+
+p{
+    font-family: 'CaviarDreams', sans-serif !important;
+    font-size: 1.2rem;
+}
+
+.loggedIn {
+    background-color: rgba(255, 255, 255, 0.8) ;
+}
+
+.main {
+}
+
+.form-label {
+    margin-bottom: 0.1rem !important;
+}
+
+
+.container {
+    width: 100%;
+    /* margin: 0px !important; */
+}
+
+.form {
+    padding: 1.5rem;
+    background-color: rgba(255, 204, 0, 0.6) ;
+}
+
+.logoBG {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@font-face {
+    font-family: 'Bebas Neue';
+    src: url('./fonts/BebasNeue-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Kenyan Coffee';
+    src: url('./fonts/Kenyan Coffee Rg.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CaviarDreams';
+    src: url('./fonts/CaviarDreams_Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@keyframes floatAnimation {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); } /* Moves up */
+    100% { transform: translateY(0); } /* Moves back to original */
+}
+
+#sigmaLOGO {
+    animation: floatAnimation 2s ease-in-out infinite;
+    height: 30em;
+    width: 45rem;
+    background-image: url("../img/SigmaSMLogo.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 768px) { 
+    #sigmaLOGO {
+        height: 10em; /* Smaller height for mobile */
+        width: 15rem;
+    }
+
+    body{
+        font-size: 1rem !important;
+    }
+
+    .inBody{
+        margin-top: 4rem;
+    }
+
+    button{
+        font-size: 1rem !important;
+    }
+}

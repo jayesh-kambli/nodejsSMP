@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
+</head>
+
+<body>
+    <div class="d-flex justify-content-center align-items-center h-100 inBody">
+        <div style="width: 100%; height: auto;" class="p-4">
+            <div class="row">
+                <div class="col-sm-12 col-lg-7 d-flex flex-column justify-content-center align-items-center logoBG">
+                    <div id="sigmaLOGO" src="./img/SigmaSMLogo.png" alt="sigma smp logo"></div>
+                    <!-- <div style="width: 100%; text-align: center; color: aliceblue; font-size: 3em;">we serve premium faltugiri</div> -->
+                </div>
+                <div class="col-sm-12 col-lg-5 p-5 d-flex flex-column justify-content-center align-items-center">
+                    <form id="registerForm" class="rounded-3 form">
+                        <div class="mb-3">
+                            <h1>Register Yourself</h1>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Minecraft Name: <span
+                                    class="badge rounded-pill text-bg-warning">Exact Same!!!</span> <span
+                                    class="badge rounded-pill text-bg-warning">Case Sensitive</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password:</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                                required>
+                        </div>
+                        <!-- <div class="mb-3">
+                            <label for="whitelist" class="form-label">Whitelist:</label>
+                            <input type="checkbox" class="form-check-input" id="whitelist" name="whitelist">
+                        </div> -->
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                        <a href="./index.html"><button type="button" class="btn btn-success w-100 mt-3">Login (already
+                                have an account)</button></a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Check if passwords match
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('name').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            if (name.includes(".")) {
+                alert("Invalid name! Dots are not allowed.");
+                return;
+            }
+
+
+            // Fetch user's IP address
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const ip = data.ip;
+
+                    // Prepare form data
+                    const formData = new FormData(this);
+                    const userData = {};
+                    formData.forEach((value, key) => {
+                        userData[key] = value;
+                    });
+                    userData['ip'] = ip;
+
+                    // Send data to PHP script
+                    fetch("/register", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(userData)
+                    })
+                        .then(response => response.json()) // Expect JSON response
+                        .then(data => {
+                            Toastify({
+                                text: data.message, // Use server response message
+                                className: "info",
+                                style: {
+                                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                                }
+                            }).showToast();
+
+                            if (data.success) {
+                                localStorage.setItem("savedName", document.getElementById("name").value);
+                                // window.location.href = 'login.html'; // Uncomment to redirect after registration
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                        });
+
+                })
+                .catch(error => {
+                    console.error('Error fetching IP:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
