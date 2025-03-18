@@ -93,38 +93,45 @@
                         userData[key] = value;
                     });
                     userData['ip'] = ip;
-
-                    // Send data to PHP script
-                    fetch("/register", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(userData)
-                    })
-                        .then(response => response.json()) // Expect JSON response
+                    fetch('/csrf-token', { credentials: 'include' })
+                        .then(response => response.json())
                         .then(data => {
-                            Toastify({
-                                text: data.message, // Use server response message
-                                className: "info",
-                                style: {
-                                    background: "linear-gradient(to right, #00b09b, #96c93d)",
-                                }
-                            }).showToast();
+                            const csrfToken = data.csrfToken;
+                            // Send data to PHP script
+                            fetch("/register", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-Token": csrfToken // Include CSRF token
+                                },
+                                credentials: 'include', // Ensure cookies are sent
+                                body: JSON.stringify(userData)
+                            })
+                                .then(response => response.json()) // Expect JSON response
+                                .then(data => {
+                                    Toastify({
+                                        text: data.message, // Use server response message
+                                        className: "info",
+                                        style: {
+                                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                                        }
+                                    }).showToast();
 
-                            if (data.success) {
-                                localStorage.setItem("savedName", document.getElementById("name").value);
-                                // window.location.href = 'login.html'; // Uncomment to redirect after registration
-                            }
+                                    if (data.success) {
+                                        localStorage.setItem("savedName", document.getElementById("name").value);
+                                        // window.location.href = 'login.html'; // Uncomment to redirect after registration
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Error:", error);
+                                });
+
                         })
                         .catch(error => {
-                            console.error("Error:", error);
+                            console.error('Error fetching IP:', error);
                         });
-
                 })
-                .catch(error => {
-                    console.error('Error fetching IP:', error);
-                });
+                .catch(error => console.error("Error fetching CSRF token:", error));
         });
     </script>
 </body>
