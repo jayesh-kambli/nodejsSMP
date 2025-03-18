@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql2");
 const session = require("express-session");
+const MySQLStore = require("express-mysql-session")(session);
 
 const router = express.Router();
 require("dotenv").config();
@@ -11,17 +12,27 @@ const db = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
 });
 
 // ✅ Setup Express Sessions
+const sessionStore = new MySQLStore({}, db);
 router.use(
     session({
-        secret: "sigma_secret",
+        secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString("hex"), // Use a strong secret
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false, // Prevent storing empty sessions
+        store: sessionStore, // Use MySQL session store
+        cookie: {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // Enable only in production
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+        },
     })
 );
-
 
 
 // ✅ User Logout API

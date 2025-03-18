@@ -10,6 +10,18 @@ const app = express();
 // Hide "X-Powered-By" to prevent attackers from identifying the framework
 app.disable("x-powered-by");
 
+const rateLimit = require("express-rate-limit");
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per 15 mins
+    message: "Too many requests, please try again later.",
+});
+
+app.use(limiter);
+app.use(express.static("public", { index: false })); // No automatic `index.html`
+
+
 const HTTP_PORT = 80;
 const HTTPS_PORT = 443;
 
@@ -33,24 +45,8 @@ const sslOptions = {
     ca: fs.readFileSync(path.normalize(process.env.SSL_CA_PATH)),
 };
 
-const rateLimit = require("express-rate-limit");
-
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per 15 mins
-    message: "Too many requests, please try again later.",
-});
-
-app.use(limiter);
-
-
 // ✅ Middleware to parse JSON
 app.use(express.json());
-
-//Use helmet middleware to set security headers
-const helmet = require("helmet");
-app.use(helmet());
-
 
 // ✅ Middleware to parse URL-encoded data (useful for form submissions)
 app.use(express.urlencoded({ extended: true }));
