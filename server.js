@@ -6,6 +6,10 @@ const https = require("https");
 const http = require("http");
 
 const app = express();
+
+// Hide "X-Powered-By" to prevent attackers from identifying the framework
+app.disable("x-powered-by");
+
 const HTTP_PORT = 80;
 const HTTPS_PORT = 443;
 
