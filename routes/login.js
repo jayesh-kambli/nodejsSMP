@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcrypt");
 // const bcrypt = require("bcryptjs");
@@ -8,7 +7,8 @@ const crypto = require("crypto");
 
 const router = express.Router();
 
-// MySQL Connection
+require("dotenv").config();
+// ✅ MySQL Connection
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
