@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
@@ -9,10 +10,17 @@ const HTTP_PORT = 80;
 const HTTPS_PORT = 443;
 
 // ✅ Load SSL Certificates
+// const sslOptions = {
+//     key: fs.readFileSync(path.join(__dirname, "ssl", "private.key")),
+//     cert: fs.readFileSync(path.join(__dirname, "ssl", "certificate.crt")),
+//     ca: fs.readFileSync(path.join(__dirname, "ssl", "ca_bundle.crt")),
+// };
+
+// ✅ Load SSL Certificates from .env
 const sslOptions = {
-    key: fs.readFileSync(path.join(__dirname, "ssl", "private.key")),
-    cert: fs.readFileSync(path.join(__dirname, "ssl", "certificate.crt")),
-    ca: fs.readFileSync(path.join(__dirname, "ssl", "ca_bundle.crt")),
+    key: fs.readFileSync(path.join(__dirname, process.env.SSL_KEY_PATH)),
+    cert: fs.readFileSync(path.join(__dirname, process.env.SSL_CERT_PATH)),
+    ca: fs.readFileSync(path.join(__dirname, process.env.SSL_CA_PATH)),
 };
 
 // ✅ Middleware to parse JSON
