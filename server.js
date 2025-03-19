@@ -20,15 +20,15 @@ app.use(
             directives: {
                 defaultSrc: ["'self'"],
                 scriptSrc: [
-                    "'self'", 
-                    "https://cdn.jsdelivr.net", 
-                    "'unsafe-inline'", 
+                    "'self'",
+                    "https://cdn.jsdelivr.net",
+                    "'unsafe-inline'",
                     "blob:",
                     "https://unpkg.com", // Allow Ionicons
                 ],
                 connectSrc: [
                     "'self'",
-                    "https://www.google-analytics.com", 
+                    "https://www.google-analytics.com",
                     "https://api.ipify.org" // Allow IP fetch
                 ]
             }
@@ -37,13 +37,28 @@ app.use(
 );
 
 const rateLimit = require("express-rate-limit");
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per 15 mins
-    message: "Too many requests, please try again later.",
-});
 
-app.use(limiter);
+
+if (process.env.NODE_ENV === "production") {
+    const limiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 40, // Limit each IP to 100 requests per 15 mins
+        message: "Too many requests, please try again later.",
+    });
+    app.use(limiter);
+
+    // Middleware to log blocked requests
+    app.use((req, res, next) => {
+        const ip = req.ip || req.connection.remoteAddress;
+
+        // Check if the request was blocked by the rate limiter
+        if (req.rateLimit && req.rateLimit.remaining === 0) {
+            console.log(`Rate limit reached for IP: ${ip}`);
+        }
+
+        next();
+    });
+}
 app.use(express.static("public", { index: false })); // No automatic `index.html`
 
 const HTTP_PORT = 80;
@@ -70,10 +85,9 @@ app.use((req, res, next) => {
 });
 
 // ✅ CSRF Middleware (Before Routes)
+// ✅ API to Get CSRF Token (Frontend should request this)
 const csrfProtection = csurf({ cookie: true });
 app.use(csrfProtection);
-
-// ✅ API to Get CSRF Token (Frontend should request this)
 app.get("/csrf-token", (req, res) => {
     res.cookie("XSRF-TOKEN", req.csrfToken(), { httpOnly: false, secure: true, sameSite: "strict" });
     res.json({ csrfToken: req.csrfToken() });

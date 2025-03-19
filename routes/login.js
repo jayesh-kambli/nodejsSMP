@@ -43,13 +43,26 @@ router.use(
 );
 
 
+if (process.env.NODE_ENV === "production") {
+    const loginLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 10, // Limit to 5 login attempts per 15 mins per IP
+        message: { error: "Too many login attempts, try again later." }
+    });
+    router.use(loginLimiter);
 
-const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limit to 5 login attempts per 15 mins per IP
-    message: { error: "Too many login attempts, try again later." }
-});
+    // Middleware to log blocked requests
+    router.use((req, res, next) => {
+        const ip = req.ip || req.connection.remoteAddress;
 
+        // Check if the request was blocked by the rate limiter
+        if (req.rateLimit && req.rateLimit.remaining === 0) {
+            console.log(`Login Rate limit reached for IP: ${ip}`);
+        }
+
+        next();
+    });
+}
 
 // ✅ User Login API
 const csurf = require("csurf");

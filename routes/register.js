@@ -3,6 +3,8 @@ const mysql = require("mysql2");
 const crypto = require("crypto");
 const expressSanitizer = require("express-sanitizer");
 const validator = require("validator");
+const rateLimit = require("express-rate-limit");
+
 const router = express.Router();
 router.use(expressSanitizer());
 
@@ -21,6 +23,27 @@ const db = mysql.createConnection({
 // ✅ User Registration API
 const csurf = require("csurf");
 const csrfProtection = csurf({ cookie: true });
+
+if (process.env.NODE_ENV === "production") {
+    const Registerimiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 10, // Limit to 10 login attempts per 15 mins per IP
+        message: { error: "Too many Register attempts, try again later." }
+    });
+    router.use(Registerimiter);
+
+    // Middleware to log blocked requests
+    router.use((req, res, next) => {
+        const ip = req.ip || req.connection.remoteAddress;
+
+        // Check if the request was blocked by the rate limiter
+        if (req.rateLimit && req.rateLimit.remaining === 0) {
+            console.log(`Register Rate limit reached for IP: ${ip}`);
+        }
+
+        next();
+    });
+}
 
 router.post("/register", csrfProtection, (req, res) => {
     // const { name, password, ip } = req.body;
