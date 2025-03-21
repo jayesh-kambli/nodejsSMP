@@ -198,7 +198,7 @@
         </div>
         <div class="col-md-3 col-12 px-2 d-flex flex-column">
             <!-- Economy Ranking Card (Unknown Height) -->
-            <div class="card shadow p-4 loggedIn">
+            <div class="card shadow p-4 loggedIn" style="height: 40%;">
                 <h2>Economy Ranking</h2>
                 <p id="playerTop0">Loading....</p>
                 <p id="playerTop1">Loading....</p>
@@ -207,10 +207,9 @@
                 <p id="playerTop4">Loading....</p>
             </div>
 
-            <!-- Bans Card (Takes Remaining Space) -->
-            <div class="card shadow p-4 loggedIn mt-3 d-flex flex-column flex-grow-1">
+            <div class="card shadow p-4 loggedIn mt-3 d-flex flex-column flex-grow-1" style="height: 70vh;">
                 <h2>Bans</h2>
-                <div class="overflow-auto flex-grow-1" id="banList">
+                <div class="overflow-auto flex-grow-1" id="banList" style="height: 50%; min-height: 0;">
                     <p>No ban data....</p>
                     <div class="d-flex justify-content-start align-items-stretch text-bg-light rounded p-2">
                         <div class="text-bg-secondary rounded d-flex justify-content-center align-items-center" style="width: 20%;">
@@ -224,6 +223,7 @@
                     </div>
                 </div>
             </div>
+            
             
         </div>
 
