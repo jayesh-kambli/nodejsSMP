@@ -4,11 +4,14 @@ const session = require("express-session");
 const fs = require("fs");
 const yaml = require("js-yaml");
 const MySQLStore = require("express-mysql-session")(session);
+const crypto = require("crypto");
+const path = require("path");
 
 const router = express.Router();
 
 // ✅ Define path to `userdata` folder
 const DATA_DIR = "C:/Users/Admin/Desktop/New folder/servers/SigmaS8/plugins/Essentials/userdata";
+const BAN_DATA_PATH = "C:/Users/Admin/Desktop/New folder/servers/SigmaS8/plugins/VulcanBanData/punishments.json";
 
 // ✅ MySQL Connection
 require("dotenv").config();
@@ -56,7 +59,7 @@ router.post("/dashboard", (req, res) => {
     }
 
     db.query(
-        `SELECT u.name, u.whitelist, u.geyser, uuid.uuid 
+        `SELECT u.name, u.whitelist, u.geyser, uuid.uuid, u.wifi 
          FROM users u 
          LEFT JOIN uuid ON u.name = uuid.name 
          WHERE u.id = ?`,
@@ -74,6 +77,7 @@ router.post("/dashboard", (req, res) => {
                 geyser: user.geyser,
                 whitelisted: user.whitelist,
                 ip_updated: ipUpdated,
+                wifi: user.wifi,
             });
         }
     );
@@ -147,6 +151,74 @@ router.post("/getData", async (req, res) => {
 
     } catch (err) {
         console.error("❌ Error reading YAML file:", err);
+        res.status(500).json({ error: "Internal Server Error", details: err.message });
+    }
+});
+
+const pool = db.promise();
+
+router.post("/switchNetwork", async (req, res) => {
+  const { username } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ error: "Username is required" });
+  }
+
+  try {
+    const [rows] = await pool.query("SELECT wifi FROM users WHERE name = ?", [username]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const newWifiValue = rows[0].wifi === 1 ? 0 : 1;
+    await pool.query("UPDATE users SET wifi = ? WHERE name = ?", [newWifiValue, username]);
+
+    res.json({ message: "WiFi value switched successfully", wifi: newWifiValue });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+// const DATA_DIR = "C:/Users/Admin/Desktop/New folder/servers/SigmaS8/plugins/Essentials/userdata";
+router.get("/topMoneyHolders", async (req, res) => {
+    try {
+        const files = fs.readdirSync(DATA_DIR).filter(file => file.endsWith(".yml"));
+        
+        let players = [];
+
+        for (const file of files) {
+            const filePath = path.join(DATA_DIR, file);
+            const ymlData = yaml.load(fs.readFileSync(filePath, "utf8"));
+            
+            if (ymlData["last-account-name"] && ymlData["money"] !== undefined) {
+                players.push({ name: ymlData["last-account-name"], money: ymlData["money"] });
+            }
+        }
+
+        // Sort players by money in descending order and get the top 3
+        players.sort((a, b) => b.money - a.money);
+        const top3 = players.slice(0, 5);
+
+        res.json({topPlayers: top3 });
+    } catch (err) {
+        console.error("❌ Error reading YAML files:", err);
+        res.status(500).json({ error: "Internal Server Error", details: err.message });
+    }
+});
+
+router.get("/getBanData", async (req, res) => {
+    try {
+        if (!fs.existsSync(BAN_DATA_PATH)) {
+            return res.status(404).json({ error: "Ban data file not found" });
+        }
+
+        const banData = JSON.parse(fs.readFileSync(BAN_DATA_PATH, "utf8"));
+        res.json({ message: "Ban data retrieved successfully!", data: banData });
+    } catch (err) {
+        console.error("❌ Error reading ban data file:", err);
         res.status(500).json({ error: "Internal Server Error", details: err.message });
     }
 });

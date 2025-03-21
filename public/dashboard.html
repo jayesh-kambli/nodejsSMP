@@ -15,127 +15,219 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
 </head>
 
-<body class="bg-light">
-
-    <div class="container mt-5">
-        <div class="card shadow p-4 d-flex flex-direction-row" id="listSorter">
-            <p id="whitelistStatus" class="m-0">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle"
-                    viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                </svg>
-                Checking whitelist status...
-            </p>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <img src="./img/SigmaSMLogo.png" style="width: 4rem; height: auto;" alt="Sigma SMP Logo">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="./dashboard.html">Rules</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Social
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="https://www.instagram.com/jayeshislive/">Instagram</a></li>
+                        <li><a class="dropdown-item" href="https://www.youtube.com/@jayeshislive3303">Youtube</a></li>
+                        <li><a class="dropdown-item" href="#">Discord</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="https://www.youtube.com/@jayeshunfiltered">Youtube (Jayesh
+                                Unfiltered)</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" aria-disabled="true">Shop (coming soon)</a>
+                </li>
+            </ul>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
         </div>
-        <div class="card shadow p-4 mt-3 d-flex flex-direction-row" id="DeviceBg">
-            <p id="DeviceStatus" class="m-0">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle"
-                    viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                </svg>
-                Verifing Device.....
-            </p>
-        </div>
+    </div>
+</nav>
 
-        <div class="card shadow p-4 mt-3 loggedIn">
-            <div class="d-flex justify-content-start align-items-center">
-                <p class="m-0" id="playerName">Ingame Name: </p>
-                <div class="spinner-grow spinner-grow-sm mx-4" role="status" id="nameBlinker">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-            <div class="d-flex justify-content-start align-items-center mt-1">
-                <p class="m-0" id="playerMoney">Ingame Money: </p>
-                <div class="spinner-grow spinner-grow-sm mx-4" role="status" id="moneyBlinker">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-            <p style="font-size: 0.8rem; background-color: rgba(255, 187, 0, 0.8); width: fit-content;" class="m-0 mt-2 rounded p-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
-                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-                  </svg>
-                  You should have joined the server at least once to get this data.</p>
-        </div>
+<body class="bg-light px-2">
 
-        <div class="card shadow p-4 mt-3 loggedIn">
-            <h2 class="mb-4">Java Edition Ip</h2>
-            <div class="row">
-                <div class="col-sm-12 col-md-8 mt-1">
-                    <input type="text" class="form-control w-100 me-2" id="serverIPJava"
-                        value="sigmasmp.zapto.org:25565" readonly>
-                </div>
-                <div class="col-sm-12 col-md-4 mt-1">
-                    <button class="btn btn-primary" id="copyIP">Copy IP</button>
-                </div>
-            </div>
-        </div>
-        <div class="card shadow p-4 mt-3 loggedIn">
-            <h2 class="mb-4">Pocket Edition Ip</h2>
-            <div class="row">
-                <div class="col-sm-12 col-md-4 mt-1">
-                    <input type="text" class="form-control w-100 me-2" id="serverIPBedrock" value="sigmasmp.zapto.org"
-                        readonly>
-                </div>
-                <div class="col-sm-12 col-md-4 mt-1">
-                    <input type="text" class="form-control w-100 me-2" id="serverIPBedrockPort" value="19132" readonly>
-                </div>
-                <div class="col-sm-12 col-md-3 mt-1">
-                    <button class="btn btn-primary" id="copyIP2">Copy IP</button>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="card shadow p-4 mt-3 loggedIn">
-            <p>
-                1️⃣ Device Registration<br>
-                After logging in, your device will be registered automatically.
-                This step is needed to keep your account safe.
-            </p>
-            <p>
-                2️⃣ Enter the Game<br>
-                Now, open Minecraft and join Sigma SMP as usual.
-            </p>
-            <p>
-                🔄 Repeat These Steps Every Time You Play
-                <br>
-                You must log in on the website before joining the game.
-                This ensures only you can access your account.
-            </p>
-        </div>
-
-        <div class="card shadow p-4 mt-3 loggedIn">
-            <a href="https://discord.gg/4ScChuJEYv" class="w-100">
-                <button type="button" class="btn btn-primary btn-lg w-100"
-                    style="background-color: #5865F2; border: none;">
+    <div class="row px-2 my-4">
+        <div class="col-md-9 col-12">
+            <div class="card shadow p-3 d-flex flex-direction-row d-flex flex-direction-row">
+                <p class="m-0 text-bg-secondary rounded px-2" id="whiteListChecker2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-discord" viewBox="0 0 16 16">
-                        <path
-                            d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612" />
+                        class="bi bi-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                     </svg>
-                    Join Discord</button></a>
+                    Checking your whitelist status....
+                </p>
+                <p class="m-0 text-bg-secondary rounded px-2 mt-3" id="accConnecter2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    </svg>
+                    Connecting this device with your minecraft account...
+                </p>
+            </div>
 
-            <button id="download" type="button" class="btn btn-primary btn-lg w-100 mt-2"
-                style="background-color: #ffae00; border: none; color: black;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-download" viewBox="0 0 16 16">
-                    <path
-                        d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                    <path
-                        d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
-                </svg>  Download Pocket Edition</button>
+            <div class="card shadow p-4 mt-3 loggedIn">
+                <h2 class="mb-1">Java Edition Ip</h2>
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="serverIPJava" value="sigmasmp.zapto.org:25565" readonly>
+                    <button class="btn btn-success" type="button" id="copyIP">Copy</button>
+                </div>
 
-            <button id="logout" type="button" class="btn btn-primary btn-lg w-100 mt-2"
-                style="background-color: #ff0000; border: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                        d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
-                    <path fill-rule="evenodd"
-                        d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
-                </svg>
-                Logout</button>
+                <h2 class="mb-1">Pocket Edition Ip</h2>
+                <div class="input-group mb-0">
+                    <input type="text" class="form-control" id="serverIPBedrock" value="sigmasmp.zapto.org" readonly>
+                    <input type="text" class="form-control" id="serverIPBedrockPort" value="19132" readonly>
+                    <button class="btn btn-success" type="button" id="copyIP2">Copy</button>
+                </div>
+            </div>
+
+
+            <div class="card shadow p-4 mt-3 loggedIn">
+                <p style="font-size: 0.8rem; background-color: rgba(255, 187, 0, 0.8); width: fit-content;"
+                    class="m-0 mb-2 rounded p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                    </svg>
+                    You should have joined the server at least once to get this data.
+                </p>
+
+                <div class="d-flex justify-content-start align-items-center">
+                    <p class="m-0" id="playerName">Ingame Name: </p>
+                    <div class="spinner-grow spinner-grow-sm mx-4" role="status" id="nameBlinker">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center mt-1">
+                    <p class="m-0" id="playerMoney">Ingame Money: </p>
+                    <div class="spinner-grow spinner-grow-sm mx-4" role="status" id="moneyBlinker">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+
+                </div>
+                <div class="d-flex flex-wrap justify-content-start align-items-center mt-2">
+                    <p class="m-0 me-2">Connection Type:</p>
+                    <span
+                        class="rounded-pill text-bg-dark d-flex justify-content-start align-items-center p-2 placeholder-wave"
+                        id="networkSwitch" style="min-width: 15em; cursor: pointer;">
+                        <div id="wifiSwitch" class="rounded-pill text-bg-dark text-center placeholder"
+                            style="width: 50%;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-wifi" viewBox="0 0 16 16">
+                                <path
+                                    d="M15.384 6.115a.485.485 0 0 0-.047-.736A12.44 12.44 0 0 0 8 3C5.259 3 2.723 3.882.663 5.379a.485.485 0 0 0-.048.736.52.52 0 0 0 .668.05A11.45 11.45 0 0 1 8 4c2.507 0 4.827.802 6.716 2.164.205.148.49.13.668-.049" />
+                                <path
+                                    d="M13.229 8.271a.482.482 0 0 0-.063-.745A9.46 9.46 0 0 0 8 6c-1.905 0-3.68.56-5.166 1.526a.48.48 0 0 0-.063.745.525.525 0 0 0 .652.065A8.46 8.46 0 0 1 8 7a8.46 8.46 0 0 1 4.576 1.336c.206.132.48.108.653-.065m-2.183 2.183c.226-.226.185-.605-.1-.75A6.5 6.5 0 0 0 8 9c-1.06 0-2.062.254-2.946.704-.285.145-.326.524-.1.75l.015.015c.16.16.407.19.611.09A5.5 5.5 0 0 1 8 10c.868 0 1.69.201 2.42.56.203.1.45.07.61-.091zM9.06 12.44c.196-.196.198-.52-.04-.66A2 2 0 0 0 8 11.5a2 2 0 0 0-1.02.28c-.238.14-.236.464-.04.66l.706.706a.5.5 0 0 0 .707 0l.707-.707z" />
+                            </svg> Wifi
+                        </div>
+                        <div id="dataSwitch" class="rounded-pill text-bg-light text-center placeholder"
+                            style="width: 50%;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z" />
+                            </svg> Mobile Data
+                        </div>
+                    </span>
+                </div>
+            </div>
+
+            <div class="card shadow p-4 mt-3 loggedIn">
+                <p>
+                    1️⃣ Device Registration<br>
+                    After logging in, your device will be registered automatically.
+                    This step is needed to keep your account safe.
+                </p>
+                <p>
+                    2️⃣ Enter the Game<br>
+                    Now, open Minecraft and join Sigma SMP as usual.
+                </p>
+                <p>
+                    🔄 Repeat These Steps Every Time You Play
+                    <br>
+                    You must log in on the website before joining the game.
+                    This ensures only you can access your account.
+                </p>
+            </div>
+
+            <div class="card shadow p-4 mt-3 loggedIn">
+                <a href="https://discord.gg/4ScChuJEYv" class="w-100">
+                    <button type="button" class="btn btn-primary btn-lg w-100"
+                        style="background-color: #5865F2; border: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-discord" viewBox="0 0 16 16">
+                            <path
+                                d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612" />
+                        </svg>
+                        Join Discord</button></a>
+
+                <button id="download" type="button" class="btn btn-primary btn-lg w-100 mt-2"
+                    style="background-color: #ffae00; border: none; color: black;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-download" viewBox="0 0 16 16">
+                        <path
+                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                        <path
+                            d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                    </svg> Download Pocket Edition</button>
+
+                <button id="logout" type="button" class="btn btn-primary btn-lg w-100 mt-2"
+                    style="background-color: #ff0000; border: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+                        <path fill-rule="evenodd"
+                            d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+                    </svg>
+                    Logout</button>
+            </div>
         </div>
+        <div class="col-md-3 col-12 px-2 d-flex flex-column">
+            <!-- Economy Ranking Card (Unknown Height) -->
+            <div class="card shadow p-4 loggedIn">
+                <h2>Economy Ranking</h2>
+                <p id="playerTop0">Loading....</p>
+                <p id="playerTop1">Loading....</p>
+                <p id="playerTop2">Loading....</p>
+                <p id="playerTop3">Loading....</p>
+                <p id="playerTop4">Loading....</p>
+            </div>
+
+            <!-- Bans Card (Takes Remaining Space) -->
+            <div class="card shadow p-4 loggedIn mt-3 d-flex flex-column flex-grow-1">
+                <h2>Bans</h2>
+                <div class="overflow-auto flex-grow-1" id="banList">
+                    <p>No ban data....</p>
+                    <div class="d-flex justify-content-start align-items-stretch text-bg-light rounded p-2">
+                        <div class="text-bg-secondary rounded d-flex justify-content-center align-items-center" style="width: 20%;">
+                            <img src="./img/face.png" alt="Minecraft Player Face" style="width: 4rem; height: auto;">
+                        </div>
+                        <div class="ms-3">
+                            <p class="m-0">Name: </p>
+                            <p class="m-0">Reason: </p>
+                            <p class="m-0">Timestamp:</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
     </div>
 
 
@@ -145,8 +237,6 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="./script/scriptDB.js"></script>
-
-    <!-- Copy to Clipboard Script -->
     <script>
 
 
