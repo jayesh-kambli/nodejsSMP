@@ -19,7 +19,7 @@ input{
     font-family: sans-serif;
 }
 
-p{
+p, li{
     font-family: 'CaviarDreams', sans-serif !important;
     font-size: 1.2rem;
 }
@@ -96,7 +96,7 @@ p{
     }
 
     body{
-        font-size: 1rem !important;
+        font-size: 0.9rem !important;
     }
 
     .inBody{
@@ -105,5 +105,10 @@ p{
 
     button{
         font-size: 1rem !important;
+    }
+
+    p, li{
+        font-family: 'CaviarDreams', sans-serif !important;
+        font-size: 1rem;
     }
 }
