@@ -107,9 +107,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         banItem.innerHTML = `
                                 <div class="d-flex justify-content-start align-items-stretch text-bg-light rounded p-2 mt-2">
-                                <div class="text-bg-secondary rounded d-flex justify-content-center align-items-center" style="width: 20%;">
-                                    <img src="./img/face.png" alt="Minecraft Player Face" style="width: auto; height: 3em;">
+                                <div class="text-bg-secondary rounded d-flex justify-content-center align-items-center overflow-hidden" style="width: 20%;">
+                                    <img src="./img/face.png" alt="Minecraft Player Face" class="img-fluid" style="max-width: 100%; height: auto;">
                                 </div>
+
                                 <div class="ms-3">
                                     <p class="m-0">Name: ${ban.player || "Unknown"}</p>
                                     <p class="m-0">Reason: ${ban.reason || "No reason provided"}</p>

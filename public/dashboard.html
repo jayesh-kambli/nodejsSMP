@@ -15,7 +15,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
 </head>
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-light container-fluid">
     <div class="container-fluid">
         <img src="./img/SigmaSMLogo.png" style="width: 4rem; height: auto;" alt="Sigma SMP Logo">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -25,13 +25,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="./dashboard.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="./dashboard.html" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Rules</a>
+                    <a class="nav-link active" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Rules</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         Social
                     </a>
@@ -47,6 +47,10 @@
                     </ul>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link active" aria-disabled="false" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdropCommands">Commands</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link disabled" aria-disabled="true">Shop (coming soon)</a>
                 </li>
             </ul>
@@ -58,10 +62,10 @@
     </div>
 </nav>
 
-<body class="bg-light px-2">
+<body class="bg-light">
 
-    <div class="row px-2 my-4">
-        <div class="col-md-9 col-12">
+    <div class="row px-4">
+        <div class="col-md-9 col-12 mt-4">
             <div class="card shadow p-3 d-flex flex-direction-row d-flex flex-direction-row">
                 <p class="m-0 text-bg-secondary rounded px-2" id="whiteListChecker2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -196,7 +200,7 @@
                     Logout</button>
             </div>
         </div>
-        <div class="col-md-3 col-12 px-2 d-flex flex-column">
+        <div class="col-md-3 col-12 px-2 d-flex flex-column mt-4">
             <!-- Economy Ranking Card (Unknown Height) -->
             <div class="card shadow p-4 loggedIn" style="height: 40%;">
                 <h2>Economy Ranking</h2>
@@ -212,8 +216,10 @@
                 <div class="overflow-auto flex-grow-1" id="banList" style="height: 50%; min-height: 0;">
                     <p>No ban data....</p>
                     <div class="d-flex justify-content-start align-items-stretch text-bg-light rounded p-2">
-                        <div class="text-bg-secondary rounded d-flex justify-content-center align-items-center" style="width: 20%;">
-                            <img src="./img/face.png" alt="Minecraft Player Face" style="width: 4rem; height: auto;">
+                        <div class="text-bg-secondary rounded d-flex justify-content-center align-items-center overflow-hidden"
+                            style="width: 20%;">
+                            <img src="./img/face.png" alt="Minecraft Player Face" class="img-fluid"
+                                style="max-width: 100%; height: auto;">
                         </div>
                         <div class="ms-3">
                             <p class="m-0">Name: </p>
@@ -223,56 +229,160 @@
                     </div>
                 </div>
             </div>
-            
-            
+
+
         </div>
 
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-xl">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Rules</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Rules</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card my-3">
+                            <div class="card-header bg-danger text-white">
+                                ⚠️ 1. General Rules
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li><strong>Respect all players</strong> – No hate speech, harassment, or toxicity.
+                                    </li>
+                                    <li><strong>No cheating or hacking</strong> – This includes X-ray, dupes, and
+                                        exploits.</li>
+                                    <li><strong>Do not impersonate</strong> – Pretending to be staff or another player
+                                        is not allowed.</li>
+                                    <li><strong>No spamming or advertising</strong> – Keep chat clean and relevant.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Economy & Trade -->
+                        <div class="card my-3">
+                            <div class="card-header bg-success text-white">
+                                💰 2. Economy & Trade
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Use <strong>in-game currency</strong> fairly.</li>
+                                    <li>No exploiting economy loopholes (e.g., <code>/tpa</code> fee abuse).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Teleport & Commands -->
+                        <div class="card my-3">
+                            <div class="card-header bg-info text-white">
+                                🌍 3. Teleport & Commands
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li><code>/tpa</code> costs <strong>$50</strong> per use – Do not spam teleport
+                                        requests.</li>
+                                    <li>No abusing teleportation for unfair advantages.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <h4>1. General Rules</h4>
-                    <ul>
-                      <li>Respect all players—no hate speech, harassment, or toxicity.</li>
-                      <li>No cheating, hacking, or using exploits (X-ray, dupes, etc.).</li>
-                      <li>Do not impersonate staff or other players.</li>
-                      <li>No excessive spamming or advertising.</li>
-                    </ul>
-            
-                    <h4>2. Gameplay Rules</h4>
-                    <ul>
-                      <li><strong>Griefing & Stealing:</strong> Not allowed unless in PvP zones.</li>
-                      <li><strong>PvP:</strong> Only allowed if both players agree or in designated PvP areas.</li>
-                      <li><strong>Trolling:</strong> Lighthearted fun is okay, but don’t ruin others' experiences.</li>
-                      <li><strong>Bases & Builds:</strong> Respect others' creations—no destroying, blocking, or claiming someone else’s work.</li>
-                    </ul>
-            
-                    <h4>3. Economy & Trade</h4>
-                    <ul>
-                      <li>Use in-game currency fairly; no scamming in trades.</li>
-                      <li>No unfair advantages in the economy (exploiting the <code>/tpa</code> fee, etc.).</li>
-                    </ul>
-            
-                    <h4>4. Teleport & Commands</h4>
-                    <ul>
-                      <li><code>/tpa</code> costs <strong>$50</strong> per use, don’t spam requests.</li>
-                      <li>Do not abuse teleportation for unfair advantages.</li>
-                    </ul>
-            
-                    <h4>5. Mod & Resource Pack Rules</h4>
-                    <ul>
-                      <li>No mods that give unfair advantages (e.g., auto-clickers, minimaps with entity tracking, etc.).</li>
-                      <li>Resource packs affecting gameplay balance are not allowed.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
+        </div>
+
+        <div class="modal fade" id="staticBackdropCommands" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabelCommands" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabelCommands">Rules</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h2 class="text-center text-primary fw-bold">📌 Server Commands Guide</h2>
+
+                        <!-- Economy & Jobs Section -->
+                        <div class="card my-3">
+                            <div class="card-header bg-success text-white">
+                                💰 Economy & Jobs
+                            </div>
+                            <div class="card-body">
+                                <p>Want to <strong>earn money</strong>? Follow these steps:</p>
+                                <ul>
+                                    <li>Gather <strong>crops, ores, or other resources</strong>.</li>
+                                    <li>Use <code>/jobs</code> to join a job and start making money.</li>
+                                    <li>Sell your items at <code>/warp Market</code> for extra cash.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Teleportation & Warps Section -->
+                        <div class="card my-3">
+                            <div class="card-header bg-info text-white">
+                                🌍 Teleportation & Warps
+                            </div>
+                            <div class="card-body">
+                                <p>Need to travel quickly? Use these commands:</p>
+                                <ul>
+                                    <li><code>/tpa player-name</code> – Request to teleport to another player
+                                        (<strong>Costs $50</strong>).</li>
+                                    <li><code>/tpaccept</code> – Accept a teleport request.</li>
+                                    <li><code>/warp Market</code> – Go to the marketplace to buy and sell items.</li>
+                                </ul>
+                                <p class="text-danger"><strong>⚠️ Important:</strong> Always set a home or remember your
+                                    base coordinates before teleporting! If you forget, you might not be able to return
+                                    easily.</p>
+                            </div>
+                        </div>
+
+                        <!-- Homes & Respawn Section -->
+                        <div class="card my-3">
+                            <div class="card-header bg-warning text-dark">
+                                🏡 Homes & Respawn Points
+                            </div>
+                            <div class="card-body">
+                                <p>Want to return to your base safely? Use these commands:</p>
+                                <ul>
+                                    <li><code>/sethome home-name</code> – Save your current location as a home.</li>
+                                    <li><code>/home home-name</code> – Teleport to your saved home (<strong>Costs
+                                            $50</strong>).</li>
+                                    <li><code>/home</code> – Return to your bed respawn point.</li>
+                                    <li><code>/delhome home-name</code> – Delete a saved home.</li>
+                                </ul>
+                                <p class="text-info"><strong>💡 Tip:</strong> If you haven’t set a home, you will
+                                    respawn at your bed. If you don’t have a bed, you’ll respawn at the world's spawn
+                                    point.</p>
+                            </div>
+                        </div>
+
+                        <!-- Land Claiming Section -->
+                        <div class="card my-3">
+                            <div class="card-header bg-danger text-white">
+                                🏠 Land Claiming & Protection
+                            </div>
+                            <div class="card-body">
+                                <p>Want to protect your house from griefers? Claim your land!</p>
+                                <ul>
+                                    <li><code>/l create land-name</code> – Create a protected land claim.</li>
+                                    <li><code>/l edit land-name</code> – Edit your land settings.</li>
+                                    <li><code>/l claim</code> – Expand your land by claiming more chunks.</li>
+                                    <li><code>/l trust player-name</code> – Allow a friend to build in your land.</li>
+                                </ul>
+                                <p class="text-success"><strong>💡 Tip:</strong> If a player is NOT trusted, they
+                                    <strong>cannot</strong> break or place blocks in your claim.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-secondary text-center mt-4">
+                            <strong>Final Reminder:</strong> Always set a home before teleporting or leaving your base!
+                            This will help you avoid getting lost.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     </div>
 
