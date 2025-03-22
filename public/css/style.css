@@ -90,6 +90,12 @@ p, li{
     background-repeat: no-repeat;
 }
 
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+
 @media screen and (max-width: 768px) { 
     #sigmaLOGO {
         height: 10em; /* Smaller height for mobile */
