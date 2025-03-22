@@ -52,6 +52,7 @@ p, li{
     align-items: center;
 }
 
+
 @font-face {
     font-family: 'Bebas Neue';
     src: url('./fonts/BebasNeue-Regular.ttf') format('truetype');
@@ -112,3 +113,52 @@ p, li{
         font-size: 1rem;
     }
 }
+
+@media screen and (min-width: 769px) {  /* Apply only for PC users */
+    .navbar-nav .nav-item {
+        position: relative;
+        padding: 0 15px; /* Add spacing for better visual separation */
+    }
+
+    /* Add vertical dividers between items */
+    .navbar-nav .nav-item:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        height: 60%;
+        width: 1px;
+        background-color: rgba(51, 51, 51, 0.5);
+        transform: translateY(-50%);
+    }
+
+    /* Apply styles to nav links except dropdowns */
+    .navbar-nav .nav-link {
+        position: relative;
+        transition: color 0.3s ease-in-out;
+        padding: 10px 15px;
+    }
+
+    /* Hover underline animation (exclude dropdowns) */
+    .navbar-nav .nav-item:not(.dropdown) .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background-color: #000000; /* Change to match your theme */
+        transition: width 0.3s ease-in-out;
+        transform: translateX(-50%);
+    }
+
+    /* Hover effects */
+    .navbar-nav .nav-item:not(.dropdown) .nav-link:hover {
+        color: #b17900; /* Adjust as needed */
+    }
+
+    .navbar-nav .nav-item:not(.dropdown) .nav-link:hover::after {
+        width: 100%;
+    }
+}
+
