@@ -97,11 +97,12 @@ document.addEventListener("DOMContentLoaded", function () {
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.data);
+                    // console.log(data.data);
+                    let banData = data.data.reverse();
                     const parentElement = document.getElementById("banList");
                     parentElement.innerHTML = ""; // Clear previous content
 
-                    data.data.forEach(ban => {
+                    banData.forEach(ban => {
                         const banItem = document.createElement("div");
                         banItem.classList.add("ban-item");
 
@@ -323,6 +324,6 @@ function addNetworkSwitchListener(name) {
 
 function formatTimestamp(ts) {
     const date = new Date(ts);
-    return date.toLocaleString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).replace(" ", "") +
+    return date.toLocaleString("en-IN", { hour: "numeric", minute: "2-digit", hour12: true }).replace(" ", "") +
            " " + date.toLocaleDateString("en-US");
 }
