@@ -61,8 +61,8 @@ if (process.env.NODE_ENV === "production") {
 }
 app.use(express.static("public", { index: false })); // No automatic `index.html`
 
-const HTTP_PORT = 80;
-const HTTPS_PORT = 443;
+const HTTP_PORT = 8000; // Changed from 80
+const HTTPS_PORT = 8444; // Changed from 443
 
 // ✅ Load SSL Certificates
 const sslOptions = {
