@@ -7,15 +7,102 @@ const http = require("http");
 const helmet = require("helmet");
 const csurf = require("csurf");
 const cookieParser = require("cookie-parser");
+const mysql = require("mysql2");
+const session = require("express-session");
+const MySQLStore = require("express-mysql-session")(session);
 
 const app = express();
 
-// Hide "X-Powered-By" to prevent attackers from identifying the framework
-app.disable("x-powered-by");
+// ========================
+// 1. Database Configuration
+// ========================
+let db;
 
-// ✅ Use Helmet with default settings
-app.use(
-    helmet({
+async function initializeDatabase() {
+    return new Promise((resolve, reject) => {
+        db = mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME
+        });
+
+        // Handle connection errors
+        db.on('error', (err) => {
+            if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+                console.error('❌ Database connection was lost');
+            } else {
+                console.error('❌ Database error:', err.message);
+            }
+            if (err.fatal) reject(err);
+        });
+
+        db.connect((err) => {
+            if (err) {
+                console.error("❌ Initial database connection failed:", err.message);
+                return reject(err);
+            }
+            console.log("✅ Connected to MySQL Database");
+            resolve(db);
+        });
+    });
+}
+
+// ========================
+// 2. Server Initialization
+// ========================
+async function startServers() {
+    // HTTP Server for redirects
+    http.createServer((req, res) => {
+        res.writeHead(301, { "Location": `https://${req.headers.host}${req.url}` });
+        res.end();
+    }).listen(HTTP_PORT, () => {
+        console.log(`🚀 HTTP Server running on ${HTTP_PORT}`);
+    });
+
+    // HTTPS Server
+    https.createServer(sslOptions, app).listen(HTTPS_PORT, () => {
+        console.log(`🔒 HTTPS Server running on ${HTTPS_PORT}`);
+    });
+}
+
+// ========================
+// 3. Application Bootstrap
+// ========================
+const HTTP_PORT = 8000;
+const HTTPS_PORT = 8444;
+
+// SSL Configuration
+const sslOptions = {
+    key: fs.readFileSync(path.normalize(process.env.SSL_KEY_PATH)),
+    cert: fs.readFileSync(path.normalize(process.env.SSL_CERT_PATH)),
+    ca: fs.readFileSync(path.normalize(process.env.SSL_CA_PATH))
+};
+
+(async () => {
+    try {
+        // 1. First connect to database
+        await initializeDatabase();
+
+        // 2. Configure express middleware
+        configureExpress();
+
+        // 3. Start servers
+        await startServers();
+
+    } catch (err) {
+        console.log("🛑 Server will shut down in 3 seconds...");
+        setTimeout(() => process.exit(1), 3000);
+    }
+})();
+
+function configureExpress() {
+    // ========================
+    // Security Middleware
+    // ========================
+    app.disable("x-powered-by");
+
+    app.use(helmet({
         contentSecurityPolicy: {
             directives: {
                 defaultSrc: ["'self'"],
@@ -24,141 +111,103 @@ app.use(
                     "https://cdn.jsdelivr.net",
                     "'unsafe-inline'",
                     "blob:",
-                    "https://unpkg.com", // Allow Ionicons
+                    "https://unpkg.com"
                 ],
                 connectSrc: [
                     "'self'",
                     "https://www.google-analytics.com",
-                    "https://api.ipify.org" // Allow IP fetch
+                    "https://api.ipify.org"
                 ]
             }
         }
-    })
-);
+    }));
 
-const rateLimit = require("express-rate-limit");
+    if (process.env.NODE_ENV === "production") {
+        const limiter = rateLimit({
+            windowMs: 15 * 60 * 1000,
+            max: 40,
+            message: "Too many requests, please try again later."
+        });
+        app.use(limiter);
+    }
 
+    // ========================
+    // Application Middleware
+    // ========================
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(cookieParser());
 
-if (process.env.NODE_ENV === "production") {
-    const limiter = rateLimit({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 40, // Limit each IP to 100 requests per 15 mins
-        message: "Too many requests, please try again later.",
-    });
-    app.use(limiter);
-
-    // Middleware to log blocked requests
+    // Force HTTPS
     app.use((req, res, next) => {
-        const ip = req.ip || req.connection.remoteAddress;
-
-        // Check if the request was blocked by the rate limiter
-        if (req.rateLimit && req.rateLimit.remaining === 0) {
-            console.log(`Rate limit reached for IP: ${ip}`);
+        if (!req.secure) {
+            return res.status(403).json({ error: "HTTPS required" });
         }
-
         next();
     });
-}
-app.use(express.static("public", { index: false })); // No automatic `index.html`
 
-const HTTP_PORT = 8000; // Changed from 80
-const HTTPS_PORT = 8444; // Changed from 443
+    // CSRF Protection
+    const csrfProtection = csurf({ cookie: true });
+    app.use(csrfProtection);
+    app.get("/csrf-token", (req, res) => {
+        res.cookie("XSRF-TOKEN", req.csrfToken(), {
+            httpOnly: false,
+            secure: true,
+            sameSite: "strict"
+        });
+        res.json({ csrfToken: req.csrfToken() });
+    });
 
-// ✅ Load SSL Certificates
-const sslOptions = {
-    key: fs.readFileSync(path.normalize(process.env.SSL_KEY_PATH)),
-    cert: fs.readFileSync(path.normalize(process.env.SSL_CERT_PATH)),
-    ca: fs.readFileSync(path.normalize(process.env.SSL_CA_PATH)),
-};
-
-// ✅ Middleware to parse JSON & Cookies
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser()); // Needed for CSRF protection
-
-// ✅ Force HTTPS by rejecting HTTP requests
-app.use((req, res, next) => {
-    if (!req.secure) {
-        return res.status(403).json({ error: "HTTPS required. Please use HTTPS instead of HTTP." });
-    }
-    next();
-});
-
-// ✅ CSRF Middleware (Before Routes)
-// ✅ API to Get CSRF Token (Frontend should request this)
-const csrfProtection = csurf({ cookie: true });
-app.use(csrfProtection);
-app.get("/csrf-token", (req, res) => {
-    res.cookie("XSRF-TOKEN", req.csrfToken(), { httpOnly: false, secure: true, sameSite: "strict" });
-    res.json({ csrfToken: req.csrfToken() });
-});
-
-// ✅ Serve Static Files (Frontend)
-app.use(express.static(path.join(__dirname, "public")));
-
-// ✅ Serve index.html as the Homepage
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-// ✅ Secure Session Cookies
-const session = require("express-session");
-const MySQLStore = require("express-mysql-session")(session);
-const mysql = require("mysql2");
-
-const isProduction = process.env.NODE_ENV === "production";
-
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-});
-
-const sessionStore = new MySQLStore({}, db);
-app.use(
-    session({
+    // Session Configuration
+    const sessionStore = new MySQLStore({}, db);
+    app.use(session({
         secret: process.env.SESSION_SECRET || require("crypto").randomBytes(32).toString("hex"),
         resave: false,
         saveUninitialized: false,
         store: sessionStore,
         cookie: {
             httpOnly: true,
-            secure: isProduction, // ✅ Secure only in production
+            secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
             maxAge: 24 * 60 * 60 * 1000,
-            domain: isProduction ? process.env.DOMAIN : undefined // ✅ No domain restriction for local testing
-        },
-    })
-);
+            domain: process.env.NODE_ENV === "production" ? process.env.DOMAIN : undefined
+        }
+    }));
 
-// ✅ Serve ZeroSSL Verification File
-app.use("/.well-known/pki-validation", express.static(path.join(__dirname, "zerossl")));
+    // ========================
+    // Routes & Static Assets
+    // ========================
+    app.use(express.static("public", { index: false }));
+    app.use("/.well-known/pki-validation", express.static(path.join(__dirname, "zerossl")));
 
-// ✅ Load API Routes
-const registerRoute = require("./routes/register");
-const loginRoute = require("./routes/login");
-const dashboardRoute = require("./routes/dashboard");
-const logoutRoute = require("./routes/logout");
+    // Serve index.html for root path
+    app.get("/", (req, res) => {
+        res.sendFile(path.join(__dirname, "public", "index.html"));
+    });
 
-// ✅ Apply Routes (CSRF already applied globally)
-app.use(registerRoute);
-app.use(loginRoute);
-app.use(dashboardRoute);
-app.use(logoutRoute);
+    // API Routes
+    app.use(require("./routes/register"));
+    app.use(require("./routes/login"));
+    app.use(require("./routes/dashboard"));
+    app.use(require("./routes/logout"));
 
-// ✅ Start HTTP Server (Redirect to HTTPS)
-http.createServer((req, res) => {
-    res.writeHead(301, { "Location": `https://${req.headers.host}${req.url}` });
-    res.end();
-}).listen(HTTP_PORT, () => {
-    console.log(`🚀 HTTP Server running at http://localhost:${HTTP_PORT} (Redirecting to HTTPS)`);
+    // Error Handling
+    app.use((req, res) => res.status(404).json({ error: "Not Found" }));
+    app.use((err, req, res, next) => {
+        console.error("❌ Error:", err.message);
+        res.status(err.status || 500).json({ error: err.message || "Internal Error" });
+    });
+}
+
+// ========================
+// Process Error Handling
+// ========================
+process.on("uncaughtException", (err) => {
+    console.error("❌ Uncaught Exception:", err);
+    setTimeout(() => process.exit(1), 3000);
 });
 
-// ✅ Start HTTPS Server
-https.createServer(sslOptions, app).listen(HTTPS_PORT, () => {
-    console.log(`🔒 HTTPS Server running at https://localhost:${HTTPS_PORT}`);
+process.on("unhandledRejection", (reason) => {
+    console.error("⚠️ Unhandled Rejection:", reason);
+    setTimeout(() => process.exit(1), 3000);
 });
