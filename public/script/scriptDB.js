@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     document.getElementById("download").addEventListener("click", () => {
-        window.location.href = "./apks/minecraft-1-21-62.apk";
+        window.location.href = "./apks/minecraft.apk";
     });
 
 
